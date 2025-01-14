@@ -17,29 +17,42 @@ limitations under the License.
 package com.example.makeitso
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.res.Resources
 import android.os.Build
+import android.provider.ContactsContract
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Event
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Task
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.makeitso.common.composable.PermissionDialog
 import com.example.makeitso.common.composable.RationaleDialog
 import com.example.makeitso.common.snackbar.SnackbarManager
+import com.example.makeitso.screens.edit_event.EditEventScreen
 import com.example.makeitso.screens.edit_task.EditTaskScreen
+import com.example.makeitso.screens.events.EventsScreen
 import com.example.makeitso.screens.login.LoginScreen
 import com.example.makeitso.screens.settings.SettingsScreen
 import com.example.makeitso.screens.sign_up.SignUpScreen
@@ -52,6 +65,9 @@ import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
 import kotlinx.coroutines.CoroutineScope
 
+
+
+@SuppressLint("RestrictedApi")
 @Composable
 @ExperimentalMaterialApi
 fun MakeItSoApp() {
@@ -59,7 +75,11 @@ fun MakeItSoApp() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
       RequestNotificationPermissionDialog()
     }
-
+    val topLevelRoutes = listOf(
+        TopLevelRoute("Task", TASKS_SCREEN, Icons.Filled.Task),
+        TopLevelRoute("Event", EVENTS_SCREEN,Icons.Filled.Event),
+        TopLevelRoute("User", SETTINGS_SCREEN, Icons.Filled.Person),
+    )
     Surface(color = MaterialTheme.colors.background) {
       val appState = rememberAppState()
 
@@ -72,6 +92,37 @@ fun MakeItSoApp() {
               Snackbar(snackbarData, contentColor = MaterialTheme.colors.onPrimary)
             }
           )
+        },
+        bottomBar = {
+          BottomNavigation {
+            val navBackStackEntry by appState.navController.currentBackStackEntryAsState()
+            val currentDestination = navBackStackEntry?.destination
+            topLevelRoutes.forEach { topLevelRoute ->
+              BottomNavigationItem(
+                icon = { Icon(topLevelRoute.icon, contentDescription = topLevelRoute.name) },
+                label = { Text(topLevelRoute.name) },
+                selected = currentDestination?.hierarchy?.any { it.hasRoute(
+                    topLevelRoute.name::class.toString(),
+                    arguments = null
+                ) } == true,
+                onClick = {
+                  appState.navController.navigate(topLevelRoute.route) {
+                    // Pop up to the start destination of the graph to
+                    // avoid building up a large stack of destinations
+                    // on the back stack as users select items
+                    popUpTo(appState.navController.graph.findStartDestination().id) {
+                      saveState = true
+                    }
+                    // Avoid multiple copies of the same destination when
+                    // reselecting the same item
+                    launchSingleTop = true
+                    // Restore state when reselecting a previously selected item
+                    restoreState = true
+                  }
+                }
+              )
+            }
+          }
         },
         scaffoldState = appState.scaffoldState
       ) { innerPaddingModifier ->
@@ -152,4 +203,24 @@ fun NavGraphBuilder.makeItSoGraph(appState: MakeItSoAppState) {
       popUpScreen = { appState.popUp() }
     )
   }
+
+  //my events
+  composable(EVENTS_SCREEN) { EventsScreen(openScreen = { route -> appState.navigate(route) }) }
+
+  composable(
+    route = "$EDIT_EVENT_SCREEN$EVENT_ID_ARG",
+    arguments = listOf(navArgument(EVENT_ID) {
+      nullable = true
+      defaultValue = null
+    })
+  ) {
+    EditEventScreen(
+      popUpScreen = { appState.popUp() }
+    )
+  }
 }
+
+data class TopLevelRoute<T : Any>(
+  val name: String,
+  val route: T,
+  val icon: ImageVector)

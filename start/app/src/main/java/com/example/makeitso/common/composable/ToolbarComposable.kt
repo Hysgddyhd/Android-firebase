@@ -52,6 +52,20 @@ fun ActionToolbar(
   )
 }
 
+//add a topbar without action button
+@Composable
+fun ActionToolbar(
+  @StringRes title: Int,
+  @DrawableRes endActionIcon: Int,
+  modifier: Modifier,
+) {
+  TopAppBar(
+    title = { Text(stringResource(title)) },
+    backgroundColor = toolbarColor(),
+  )
+}
+
+
 @Composable
 private fun toolbarColor(darkTheme: Boolean = isSystemInDarkTheme()): Color {
   return if (darkTheme) MaterialTheme.colors.secondary else MaterialTheme.colors.primaryVariant

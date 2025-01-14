@@ -40,13 +40,19 @@ class ConfigurationServiceImpl @Inject constructor() : ConfigurationService {
     remoteConfig.setDefaultsAsync(AppConfig.remote_config_defaults)
   }
 
-  override suspend fun fetchConfiguration(): Boolean = true
+  override suspend fun fetchConfiguration(): Boolean {
+    return remoteConfig.fetchAndActivate().await()
+  }
 
   override val isShowTaskEditButtonConfig: Boolean
-    get() = true
+    get() = remoteConfig[SHOW_TASK_EDIT_BUTTON_KEY].asBoolean()
+
+  override val isShowEventEditButtonConfig: Boolean
+    get() = remoteConfig[SHOW_EVENT_EDIT_BUTTON_KEY].asBoolean()
 
   companion object {
     private const val SHOW_TASK_EDIT_BUTTON_KEY = "show_task_edit_button"
+    private const val SHOW_EVENT_EDIT_BUTTON_KEY = "show_event_edit_button"
     private const val FETCH_CONFIG_TRACE = "fetchConfig"
   }
 }

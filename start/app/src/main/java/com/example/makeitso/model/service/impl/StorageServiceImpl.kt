@@ -16,6 +16,7 @@ limitations under the License.
 
 package com.example.makeitso.model.service.impl
 
+import com.example.makeitso.model.Event
 import com.example.makeitso.model.Task
 import com.example.makeitso.model.service.AccountService
 import com.example.makeitso.model.service.StorageService
@@ -37,7 +38,11 @@ constructor(private val firestore: FirebaseFirestore, private val auth: AccountS
 
   @OptIn(ExperimentalCoroutinesApi::class)
   override val tasks: Flow<List<Task>>
-    get() = emptyFlow()
+    //add listener to user id of collection,
+    //will be emitted if current user sign out
+    get() = auth.currentUser.flatMapLatest { user ->
+      firestore.collection(TASK_COLLECTION).whereEqualTo(USER_ID_FIELD,user.id).dataObjects()
+    }
 
   override suspend fun getTask(taskId: String): Task? =
     firestore.collection(TASK_COLLECTION).document(taskId).get().await().toObject()
@@ -57,10 +62,45 @@ constructor(private val firestore: FirebaseFirestore, private val auth: AccountS
     firestore.collection(TASK_COLLECTION).document(taskId).delete().await()
   }
 
+  //my object
+  @OptIn(ExperimentalCoroutinesApi::class)
+  override val events: Flow<List<Event>>
+    //add listener to user id of collection,
+    //will be emitted if current user sign out
+    get() = auth.currentUser.flatMapLatest { user ->
+      firestore.collection(EVENT_COLLECTION).whereEqualTo(USER_ID_FIELD,user.id).dataObjects()
+    }
+
+
+  override suspend fun getEvent(eventId: String): Event? =
+      firestore.collection(EVENT_COLLECTION).document(eventId).get().await().toObject()
+
+
+  override suspend fun saveEvent(event: Event): String =
+    trace(SAVE_EVENT_TRACE) {
+      val eventWithUserId = event.copy(userId = auth.currentUserId)
+      firestore.collection(EVENT_COLLECTION).add(eventWithUserId).await().id
+    }
+
+
+  override suspend fun updateEvent(event: Event) :Unit =
+    trace(UPDATE_EVENT_TRACE) {
+      firestore.collection(EVENT_COLLECTION).document(event.id).set(event).await()
+    }
+
+  override suspend fun deleteEvent(eventId: String) {
+    firestore.collection(EVENT_COLLECTION).document(eventId).delete().await()
+  }
+
+
   companion object {
     private const val USER_ID_FIELD = "userId"
     private const val TASK_COLLECTION = "tasks"
     private const val SAVE_TASK_TRACE = "saveTask"
     private const val UPDATE_TASK_TRACE = "updateTask"
+//my event
+    private const val EVENT_COLLECTION = "events"
+    private const val SAVE_EVENT_TRACE = "saveEvent"
+    private const val UPDATE_EVENT_TRACE = "updateEvent"
   }
 }
