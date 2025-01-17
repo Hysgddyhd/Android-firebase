@@ -33,3 +33,10 @@ const val EDIT_EVENT_SCREEN = "EditEventScreen"
 
 const val EVENT_ID = "eventId"
 const val EVENT_ID_ARG = "?$EVENT_ID={$EVENT_ID}"
+
+//
+const val GOODS_SCREEN = "GoodsScreen"
+const val EDIT_GOOD_SCREEN = "EditGoodScreen"
+
+const val GOOD_ID = "goodId"
+const val GOOD_ID_ARG = "?$GOOD_ID={$GOOD_ID}"
