@@ -25,7 +25,7 @@
     <!-- TasksScreen -->
     <string name="tasks">Tasks</string>
     <string name="events">Events</string>
-
+    <string name="goods">Goods</string>
     <!-- EditTaskScreen -->
     <string name="edit_task">Edit your task</string>
     <string name="edit_event">Edit your event</string>

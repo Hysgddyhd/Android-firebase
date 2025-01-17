@@ -16,7 +16,7 @@ limitations under the License.
 
 package com.example.makeitso.model.service
 
-import com.example.makeitso.model.Event
+import com.example.makeitso.model.Good
 import com.example.makeitso.model.Task
 import kotlinx.coroutines.flow.Flow
 
@@ -27,9 +27,9 @@ interface StorageService {
   suspend fun update(task: Task)
   suspend fun delete(taskId: String)
 
-  val events: Flow<List<Event>>
-  suspend fun getEvent(eventId: String): Event?
-  suspend fun saveEvent(event: Event): String
-  suspend fun updateEvent(event: Event)
-  suspend fun deleteEvent(eventId: String)
+  val goods: Flow<List<Good>>
+  suspend fun getGood(goodId: String): Good?
+  suspend fun saveGood(good: Good): String
+  suspend fun updateGood(good: Good)
+  suspend fun deleteGood(goodId: String)
 }

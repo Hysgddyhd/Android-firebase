@@ -16,7 +16,7 @@ limitations under the License.
 
 package com.example.makeitso.model.service.impl
 
-import com.example.makeitso.model.Event
+import com.example.makeitso.model.Good
 import com.example.makeitso.model.Task
 import com.example.makeitso.model.service.AccountService
 import com.example.makeitso.model.service.StorageService
@@ -64,32 +64,32 @@ constructor(private val firestore: FirebaseFirestore, private val auth: AccountS
 
   //my object
   @OptIn(ExperimentalCoroutinesApi::class)
-  override val events: Flow<List<Event>>
+  override val goods: Flow<List<Good>>
     //add listener to user id of collection,
     //will be emitted if current user sign out
     get() = auth.currentUser.flatMapLatest { user ->
-      firestore.collection(EVENT_COLLECTION).whereEqualTo(USER_ID_FIELD,user.id).dataObjects()
+      firestore.collection(GOOD_COLLECTION).whereEqualTo(USER_ID_FIELD,user.id).dataObjects()
     }
 
 
-  override suspend fun getEvent(eventId: String): Event? =
-      firestore.collection(EVENT_COLLECTION).document(eventId).get().await().toObject()
+  override suspend fun getGood(goodId: String): Good? =
+      firestore.collection(GOOD_COLLECTION).document(goodId).get().await().toObject()
 
 
-  override suspend fun saveEvent(event: Event): String =
-    trace(SAVE_EVENT_TRACE) {
-      val eventWithUserId = event.copy(userId = auth.currentUserId)
-      firestore.collection(EVENT_COLLECTION).add(eventWithUserId).await().id
+  override suspend fun saveGood(good: Good): String =
+    trace(SAVE_GOOD_TRACE) {
+      val goodWithUserId = good.copy(userId = auth.currentUserId)
+      firestore.collection(GOOD_COLLECTION).add(goodWithUserId).await().id
     }
 
 
-  override suspend fun updateEvent(event: Event) :Unit =
-    trace(UPDATE_EVENT_TRACE) {
-      firestore.collection(EVENT_COLLECTION).document(event.id).set(event).await()
+  override suspend fun updateGood(good: Good) :Unit =
+    trace(UPDATE_GOOD_TRACE) {
+      firestore.collection(GOOD_COLLECTION).document(good.id).set(good).await()
     }
 
-  override suspend fun deleteEvent(eventId: String) {
-    firestore.collection(EVENT_COLLECTION).document(eventId).delete().await()
+  override suspend fun deleteGood(goodId: String) {
+    firestore.collection(GOOD_COLLECTION).document(goodId).delete().await()
   }
 
 
@@ -102,5 +102,11 @@ constructor(private val firestore: FirebaseFirestore, private val auth: AccountS
     private const val EVENT_COLLECTION = "events"
     private const val SAVE_EVENT_TRACE = "saveEvent"
     private const val UPDATE_EVENT_TRACE = "updateEvent"
+
+    //my good
+    private const val GOOD_COLLECTION = "goods"
+    private const val SAVE_GOOD_TRACE = "saveGood"
+    private const val UPDATE_GOOD_TRACE = "updateGood"
+
   }
 }

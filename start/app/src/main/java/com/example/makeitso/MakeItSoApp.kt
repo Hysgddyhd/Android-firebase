@@ -20,7 +20,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.res.Resources
 import android.os.Build
-import android.provider.ContactsContract
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
@@ -50,9 +49,9 @@ import androidx.navigation.navArgument
 import com.example.makeitso.common.composable.PermissionDialog
 import com.example.makeitso.common.composable.RationaleDialog
 import com.example.makeitso.common.snackbar.SnackbarManager
-import com.example.makeitso.screens.edit_event.EditEventScreen
+import com.example.makeitso.screens.edit_good.EditEventScreen
 import com.example.makeitso.screens.edit_task.EditTaskScreen
-import com.example.makeitso.screens.events.EventsScreen
+import com.example.makeitso.screens.goods.EventsScreen
 import com.example.makeitso.screens.login.LoginScreen
 import com.example.makeitso.screens.settings.SettingsScreen
 import com.example.makeitso.screens.sign_up.SignUpScreen
