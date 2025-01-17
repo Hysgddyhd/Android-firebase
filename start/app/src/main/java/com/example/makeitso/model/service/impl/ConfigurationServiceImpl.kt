@@ -17,15 +17,14 @@ limitations under the License.
 package com.example.makeitso.model.service.impl
 
 import com.example.makeitso.BuildConfig
-import com.example.makeitso.R.xml as AppConfig
 import com.example.makeitso.model.service.ConfigurationService
-import com.example.makeitso.model.service.trace
 import com.google.firebase.Firebase
 import com.google.firebase.remoteconfig.get
 import com.google.firebase.remoteconfig.remoteConfig
 import com.google.firebase.remoteconfig.remoteConfigSettings
-import javax.inject.Inject
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
+import com.example.makeitso.R.xml as AppConfig
 
 class ConfigurationServiceImpl @Inject constructor() : ConfigurationService {
   private val remoteConfig

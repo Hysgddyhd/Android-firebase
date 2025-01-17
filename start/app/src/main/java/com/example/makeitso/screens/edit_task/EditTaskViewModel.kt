@@ -18,6 +18,7 @@ package com.example.makeitso.screens.edit_task
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
+import com.example.makeitso.R
 import com.example.makeitso.TASK_ID
 import com.example.makeitso.common.ext.idFromParameter
 import com.example.makeitso.model.Task
@@ -94,6 +95,8 @@ class EditTaskViewModel @Inject constructor(
   private fun Int.toClockPattern(): String {
     return if (this < 10) "0$this" else "$this"
   }
+
+
 
   companion object {
     private const val UTC = "UTC"

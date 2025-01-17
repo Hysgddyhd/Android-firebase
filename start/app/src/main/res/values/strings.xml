@@ -56,4 +56,29 @@
     <string name="notification_permission_title">Notification permission</string>
     <string name="notification_permission_description">The notification permission is important for this app. Please grant the permission.</string>
     <string name="notification_permission_settings">The notification permission is important for this app. Please navigate to your device settings and enable notifications for Make it So.</string>
+    <!--from gadget-->
+    <string name="about">About:</string>
+    <string name="item_price">%1$d RM</string>
+    <string name="expand_button_content_description">See more or less information about a dog.</string>
+    <string name="in_stock">in stock</string>
+    <string name="back_button">Back</string>
+    <string name="item_entry_title">Add Item</string>
+    <string name="item_name_req">Item Name*</string>
+    <string name="item_price_req">Item Pricce*</string>
+    <string name="quantity_req">Item Quantity*</string>
+    <string name="required_fields">*required fields</string>
+    <string name="save_action">Save</string>
+    <string name="description_req">Item detail</string>
+    <string name="item_detail_title">Good Detail</string>
+    <string name="update">Update</string>
+    <string name="delete">Delete</string>
+    <string name="attention">Attention</string>
+    <string name="delete_question">Are you sure you want to delete?</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="sell">Sell\n</string>
+    <string name="item_edit_title">eedit item</string>
+    <string name="good">good</string>
+    <string name="quantity_in_stock">Quantity in stock</string>
+    <string name="price">Price</string>
 </resources>

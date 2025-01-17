@@ -1,27 +1,38 @@
 package com.example.makeitso.screens.goods
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.*
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.makeitso.R.drawable as AppIcon
-import com.example.makeitso.R.string as AppText
 import com.example.makeitso.common.composable.ActionToolbar
 import com.example.makeitso.common.ext.smallSpacer
 import com.example.makeitso.common.ext.toolbarActions
-import androidx.compose.foundation.lazy.items
 import com.example.makeitso.model.Good
+import com.example.makeitso.R.drawable as AppIcon
+import com.example.makeitso.R.string as AppText
 
 @Composable
 @ExperimentalMaterialApi
-fun EventsScreen(
+fun GoodsScreen(
     openScreen: (String) -> Unit,
     viewModel: EventsViewModel = hiltViewModel()
 ) {

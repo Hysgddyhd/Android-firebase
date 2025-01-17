@@ -25,11 +25,10 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.dataObjects
 import com.google.firebase.firestore.toObject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
 class StorageServiceImpl
 @Inject
@@ -95,6 +94,7 @@ constructor(private val firestore: FirebaseFirestore, private val auth: AccountS
 
   companion object {
     private const val USER_ID_FIELD = "userId"
+
     private const val TASK_COLLECTION = "tasks"
     private const val SAVE_TASK_TRACE = "saveTask"
     private const val UPDATE_TASK_TRACE = "updateTask"

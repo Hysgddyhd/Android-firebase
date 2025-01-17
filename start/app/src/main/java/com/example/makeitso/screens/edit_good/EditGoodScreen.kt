@@ -1,184 +1,176 @@
 package com.example.makeitso.screens.edit_good
 
+import android.graphics.drawable.Icon
+import android.icu.util.Currency
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
-import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.makeitso.common.composable.ActionToolbar
-import com.example.makeitso.common.composable.BasicField
-import com.example.makeitso.common.composable.CardSelector
-import com.example.makeitso.common.composable.RegularCardEditor
-import com.example.makeitso.common.ext.card
-import com.example.makeitso.common.ext.fieldModifier
-import com.example.makeitso.common.ext.spacer
-import com.example.makeitso.common.ext.toolbarActions
+import com.example.makeitso.R
 import com.example.makeitso.model.Good
-import com.example.makeitso.model.Priority
-import com.google.android.material.datepicker.MaterialDatePicker
-import com.google.android.material.timepicker.MaterialTimePicker
-import com.google.android.material.timepicker.TimeFormat
-import com.example.makeitso.R.drawable as AppIcon
-import com.example.makeitso.R.string as AppText
+import java.util.Locale
+
 
 @Composable
-@ExperimentalMaterialApi
-fun EditGoodScreen(
+fun GoodEntryScreen(
     popUpScreen: () -> Unit,
-    viewModel: EditGoodViewModel = hiltViewModel()
+    viewModel: EditGoodViewModel = hiltViewModel(),
 ) {
     val good by viewModel.good
     val activity = LocalContext.current as AppCompatActivity
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.Center
+    ) {
+        GoodEntryBody(
+            onSaveClick = {
+                viewModel.onDoneClick(popUpScreen)
+            },
 
-    EditEventScreenContent(
-        event = event,
-        onDoneClick = { viewModel.onDoneClick(popUpScreen) },
-        onTitleChange = viewModel::onTitleChange,
-        onDescriptionChange = viewModel::onDescriptionChange,
-        onLocationChange = viewModel::onLocationChange,
-        onDateChange = viewModel::onDateChange,
-        onTimeChange = viewModel::onTimeChange,
-        onPeriodChange = viewModel::onPeriodChange,
-        onPriorityChange = viewModel::onPriorityChange,
-        onFlagToggle = viewModel::onFlagToggle,
-        activity = activity
-    )
+            good = good,
+            onNameChange = viewModel::onNameChange,
+            onPriceChange = viewModel::onPriceChange,
+            onQuantityChange = viewModel::onQuantityChange,
+            onDescrChange = viewModel::onDescriptionChange,
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth(),
+        )
+    }
 }
 
 @Composable
-@ExperimentalMaterialApi
-fun EditEventScreenContent(
-    modifier: Modifier = Modifier,
-    event: Event,
-    onDoneClick: () -> Unit,
-    onTitleChange: (String) -> Unit,
-    onDescriptionChange: (String) -> Unit,
-    onLocationChange: (String) -> Unit,
-    onDateChange: (Long) -> Unit,
-    onTimeChange: (Int, Int) -> Unit,
-    onPriorityChange: (String) -> Unit,
-    onPeriodChange: (Int, Int) -> Unit,
-    onFlagToggle: (String) -> Unit,
-    activity: AppCompatActivity?
+fun GoodEntryBody(
+    good:Good,
+    onNameChange:(String)->Unit,
+    onPriceChange:(Double)->Unit,
+    onQuantityChange:(Int)->Unit,
+    onDescrChange:(String)->Unit,
+    onSaveClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier.fillMaxWidth().fillMaxHeight().verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        ActionToolbar(
-            title = AppText.edit_event,
-            modifier = Modifier.toolbarActions(),
-            endActionIcon = AppIcon.ic_check,
-         //   endAction = { onDoneClick() }
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_large)),
+        modifier = modifier.padding(dimensionResource(id = R.dimen.padding_medium))
+        ) {
+        GoodInputForm(
+            good = good,
+            modifier = modifier,
+            onNameChange = onNameChange,
+            onPriceChange = onPriceChange,
+            onQuantityChange = onQuantityChange,
+            onDescrChange = onDescrChange,
         )
 
-        Spacer(modifier = Modifier.spacer())
-
-        val fieldModifier = Modifier.fieldModifier()
-        BasicField(AppText.title, event.title, onTitleChange, fieldModifier)
-        BasicField(AppText.description, event.description, onDescriptionChange, fieldModifier)
-        BasicField(AppText.location, event.location, onLocationChange, fieldModifier)
-
-        Spacer(modifier = Modifier.spacer())
-        CardEditors(event, onDateChange, onTimeChange,onPeriodChange, activity)
-        CardSelectors(event, onPriorityChange, onFlagToggle)
-
-        Spacer(modifier = Modifier.spacer())
-
-        Button(onClick = onDoneClick) { Text("Done", color = Color.White, fontSize = 18.sp)}
+        Button(
+            onClick = onSaveClick,
+            shape = MaterialTheme.shapes.small,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(stringResource(R.string.save_action))
+        }
     }
 }
 
-@ExperimentalMaterialApi
-@Composable
-private fun CardEditors(
-    event: Event,
-    onDateChange: (Long) -> Unit,
-    onTimeChange: (Int, Int) -> Unit,
-    activity: AppCompatActivity?
-) {
-    val startTime=event.startTime.date.toString()+"/"+event.startTime.getMonth().inc()
-    RegularCardEditor(AppText.date, AppIcon.ic_calendar, startTime, Modifier.card()) {
-        showDatePicker(activity, onDateChange)
-
-    }
-
-    RegularCardEditor(AppText.time, AppIcon.ic_clock, event.period.toString(), Modifier.card()) {
-        showTimePicker(activity, onTimeChange)
-    }
-}
-
-@ExperimentalMaterialApi
-@Composable
-private fun CardEditors(
-    event: Event,
-    onDateChange: (Long) -> Unit,
-    onTimeChange: (Int, Int) -> Unit,
-    onPeriodChange:(Int, Int) -> Unit,
-    activity: AppCompatActivity?
-) {
-    val eventDate=event.startTime.date.toString()+"/"+event.startTime.getMonth().inc()
-    val eventTime=event.startTime.hours.toString()+":"+event.startTime.minutes
-    RegularCardEditor(AppText.date, AppIcon.ic_calendar, eventDate, Modifier.card()) {
-        showDatePicker(activity, onDateChange)
-
-    }
-    RegularCardEditor(AppText.time, AppIcon.ic_flag, eventTime, Modifier.card()) {
-        showTimePicker(activity, onTimeChange)
-    }
-
-    RegularCardEditor(AppText.period, AppIcon.ic_clock, event.period.toString(), Modifier.card()) {
-        showTimePicker(activity, onPeriodChange)
-    }
-}
 
 @Composable
-@ExperimentalMaterialApi
-private fun CardSelectors(
-    good: Good,
-    onPriorityChange: (String) -> Unit,
-    onFlagToggle: (String) -> Unit
+fun GoodInputForm(
+    good:Good,
+    modifier: Modifier = Modifier,
+    onNameChange:(String)->Unit,
+    onPriceChange:(Double)->Unit,
+    onQuantityChange:(Int)->Unit,
+    onDescrChange:(String)->Unit,
+    enabled: Boolean = true
 ) {
-    CardSelector(AppText.priority, Priority.getOptions(), prioritySelection, Modifier.card()) {
-            newValue ->
-        onPriorityChange(newValue)
-    }
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
+    ) {
+       // ListItem()
+        OutlinedTextField(
+            value = good.name,
+            onValueChange = onNameChange,
+            label = { Text(stringResource(R.string.item_name_req)) },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next),
+            modifier = Modifier.fillMaxWidth(),
+            enabled = enabled,
+            singleLine = true
+        )
+       // ListItem()
+        OutlinedTextField(
+            value = good.price.toString(),
+            onValueChange = {
+                value->
+                value.toDoubleOrNull()?.let { onPriceChange(it) }
+            },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal, imeAction = ImeAction.Next),
+            label = { Text(stringResource(R.string.item_price_req)) },
 
-    val flagSelection = EditFlagOption.getByCheckedState(event.flag).name
-    CardSelector(AppText.flag, EditFlagOption.getOptions(), flagSelection, Modifier.card()) { newValue
-        ->
-        onFlagToggle(newValue)
+            leadingIcon = {
+                Text(text="RM", fontSize = 18.sp)
+            },
+            modifier = Modifier.fillMaxWidth(),
+            enabled = enabled,
+            singleLine = true
+        )
+        OutlinedTextField(
+            value = good.quantity.toString(),
+            onValueChange = {
+                value->
+                value.toIntOrNull()?.let { onQuantityChange(it) }
+            },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal, imeAction = ImeAction.Next),
+            label = { Text(stringResource(R.string.quantity_req)) },
+
+            modifier = Modifier.fillMaxWidth(),
+            enabled = enabled,
+            singleLine = true
+        )
+        OutlinedTextField(
+            value = good.description,
+            onValueChange = onDescrChange,
+            label = { Text(stringResource(R.string.description_req)) },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Done),
+            modifier = Modifier.fillMaxWidth(),
+            enabled = enabled,
+
+        )
+        if (enabled) {
+            Text(
+                text = stringResource(R.string.required_fields),
+                modifier = Modifier.padding(start = dimensionResource(id = R.dimen.padding_medium))
+            )
+        }
     }
 }
 
-private fun showDatePicker(activity: AppCompatActivity?, onDateChange: (Long) -> Unit) {
-    val picker = MaterialDatePicker.Builder.datePicker().build()
 
-    activity?.let {
-        picker.show(it.supportFragmentManager, picker.toString())
-        picker.addOnPositiveButtonClickListener { timeInMillis -> onDateChange(timeInMillis) }
-    }
-}
-
-private fun showTimePicker(activity: AppCompatActivity?, onTimeChange: (Int, Int) -> Unit) {
-    val picker = MaterialTimePicker.Builder().setTimeFormat(TimeFormat.CLOCK_24H).build()
-
-    activity?.let {
-        picker.show(it.supportFragmentManager, picker.toString())
-        picker.addOnPositiveButtonClickListener { onTimeChange(picker.hour, picker.minute) }
-    }
-}
 

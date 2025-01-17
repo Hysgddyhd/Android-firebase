@@ -7,5 +7,5 @@ fun Good.hasName(): Boolean {
 }
 
 fun Good.hasPrice(): Boolean {
-  return this.price!=0
+  return this.price!=0.0
 }

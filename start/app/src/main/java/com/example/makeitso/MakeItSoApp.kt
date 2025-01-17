@@ -22,11 +22,23 @@ import android.content.res.Resources
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.*
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.ScaffoldState
+import androidx.compose.material.Snackbar
+import androidx.compose.material.SnackbarHost
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Shop
 import androidx.compose.material.icons.filled.Task
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.getValue
@@ -49,9 +61,9 @@ import androidx.navigation.navArgument
 import com.example.makeitso.common.composable.PermissionDialog
 import com.example.makeitso.common.composable.RationaleDialog
 import com.example.makeitso.common.snackbar.SnackbarManager
-import com.example.makeitso.screens.edit_good.EditEventScreen
+import com.example.makeitso.screens.edit_good.GoodEntryScreen
 import com.example.makeitso.screens.edit_task.EditTaskScreen
-import com.example.makeitso.screens.goods.EventsScreen
+import com.example.makeitso.screens.goods.GoodsScreen
 import com.example.makeitso.screens.login.LoginScreen
 import com.example.makeitso.screens.settings.SettingsScreen
 import com.example.makeitso.screens.sign_up.SignUpScreen
@@ -65,7 +77,6 @@ import com.google.accompanist.permissions.shouldShowRationale
 import kotlinx.coroutines.CoroutineScope
 
 
-
 @SuppressLint("RestrictedApi")
 @Composable
 @ExperimentalMaterialApi
@@ -76,7 +87,7 @@ fun MakeItSoApp() {
     }
     val topLevelRoutes = listOf(
         TopLevelRoute("Task", TASKS_SCREEN, Icons.Filled.Task),
-        TopLevelRoute("Event", EVENTS_SCREEN,Icons.Filled.Event),
+        TopLevelRoute("Good", GOODS_SCREEN,Icons.Filled.Shop),
         TopLevelRoute("User", SETTINGS_SCREEN, Icons.Filled.Person),
     )
     Surface(color = MaterialTheme.colors.background) {
@@ -204,17 +215,17 @@ fun NavGraphBuilder.makeItSoGraph(appState: MakeItSoAppState) {
   }
 
   //my events
-  composable(EVENTS_SCREEN) { EventsScreen(openScreen = { route -> appState.navigate(route) }) }
+  composable(GOODS_SCREEN) { GoodsScreen(openScreen = { route -> appState.navigate(route) }) }
 
   composable(
-    route = "$EDIT_EVENT_SCREEN$EVENT_ID_ARG",
-    arguments = listOf(navArgument(EVENT_ID) {
+    route = "$EDIT_GOOD_SCREEN$GOOD_ID_ARG",
+    arguments = listOf(navArgument(GOOD_ID) {
       nullable = true
       defaultValue = null
     })
   ) {
-    EditEventScreen(
-      popUpScreen = { appState.popUp() }
+    GoodEntryScreen(
+        popUpScreen = { appState.popUp() },
     )
   }
 }
